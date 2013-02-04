@@ -1,0 +1,4 @@
+Repository for the "hello world" Anaconda addon. It is supposed to be as simple
+as possible to not disturb user (addon developer) from important things. In
+the same time it should demonstrate Anaconda's API and functionality provided
+for addons.
