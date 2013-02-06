@@ -79,7 +79,7 @@ class HelloWorldSpoke(NormalSpoke):
         @type data: pykickstart.base.BaseHandler
         @param storage: object storing storage-related information
                         (disks, partitioning, bootloader, etc.)
-        @type storage: blivet.Storage
+        @type storage: blivet.Blivet
         @param payload: object storing packaging-related information
         @type payload: pyanaconda.packaging.Payload
         @param instclass: distribution-specific information
