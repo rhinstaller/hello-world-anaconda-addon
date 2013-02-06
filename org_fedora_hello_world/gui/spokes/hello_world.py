@@ -56,8 +56,7 @@ class HelloWorldSpoke(NormalSpoke):
     # the name of the main window widget
     mainWidgetName = "helloWorldSpokeWindow"
 
-    # name of the .glade file
-    # TODO: how are these paths handled?
+    # name of the .glade file in the same directory as this source
     uiFile = "hello_world.glade"
 
     # category this spoke belongs to
