@@ -23,6 +23,7 @@
 import os.path
 
 from pyanaconda.addons import AddonData
+from pyanaconda.constants import ROOT_PATH
 
 HELLO_FILE_PATH = "/root/hello_world_addon_output.txt"
 
@@ -95,8 +96,6 @@ class HelloWorldData(AddonData):
         @type users: pyanaconda.users.Users instance
 
         """
-
-        # XXX: how to get ROOT_PATH here?
 
         hello_file_path = os.path.normpath(ROOT_PATH + HELLO_FILE_PATH)
         with open(hello_file_path, "w") as fobj:
