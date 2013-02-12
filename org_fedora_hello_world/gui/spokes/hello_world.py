@@ -121,7 +121,7 @@ class HelloWorldSpoke(NormalSpoke):
 
         """
 
-        self.data.org_fedora_hello_world.text = self._entry.get_text()
+        self.data.addons.org_fedora_hello_world.text = self._entry.get_text()
 
     def execute(self):
         """
@@ -173,7 +173,8 @@ class HelloWorldSpoke(NormalSpoke):
     def on_main_button_clicked(self, *args):
         """Handler for the mainButton's "clicked" signal."""
 
-        dialog = HelloWorldDialog()
+        # every GUIObject gets ksdata in __init__
+        dialog = HelloWorldDialog(self.data)
 
         # show dialog above the lightbox
         with enlightbox(self.window, dialog.window):
