@@ -25,6 +25,11 @@ import os.path
 from pyanaconda.addons import AddonData
 from pyanaconda.constants import ROOT_PATH
 
+# export HelloWorldData class to prevent Anaconda's collect method from taking
+# AddonData class instead of the HelloWorldData class
+# (@see: pyanaconda.kickstart.AnacondaKSHandler.__init__)
+__all__ = ["HelloWorldData"]
+
 HELLO_FILE_PATH = "/root/hello_world_addon_output.txt"
 
 class HelloWorldData(AddonData):
