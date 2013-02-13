@@ -155,6 +155,8 @@ class HelloWorldSpoke(NormalSpoke):
         also the values themselves. The returned value will appear on the hub
         below the spoke's title.
 
+        @rtype: str
+
         """
 
         text = self._entry.get_text()
