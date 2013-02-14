@@ -96,15 +96,18 @@ class HelloWorldSpoke(NormalTUISpoke):
         It should update the UI elements according to the contents of
         self.data.
 
+        @see: pyanaconda.ui.common.UIObject.refresh
+        @see: pyanaconda.ui.tui.base.UIScreen.refresh
         @param args: optional argument that may be used when the screen is
                      scheduled (passed to App.switch_screen* methods)
         @type args: anything
-        @see: pyanaconda.ui.common.UIObject.refresh
-        @see: pyanaconda.ui.tui.base.UIScreen.refresh
+        @return: whether this screen requests input or not
+        @rtype: bool
 
         """
 
         self._entered_text = self.data.addons.org_fedora_hello_world.text
+        return True
 
     def apply(self):
         """
