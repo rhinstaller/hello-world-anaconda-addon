@@ -48,9 +48,10 @@ class HelloWorldSpoke(NormalTUISpoke):
     # title of the spoke
     title = _("Hello World")
 
-    # category this spoke belongs to (note the difference between TUI's category
-    # as simple string and GUI's category as a class)
-    category = "hello world"
+    # categories in text mode are simple strings that are not shown anywhere,
+    # every hub just has a list of categories it should display spokes from
+    # let's just use one of the standard categories defined for the Summary hub
+    category = "localization"
 
     def __init__(self, app, data, storage, payload, instclass):
         """
