@@ -176,11 +176,15 @@ class HelloWorldSpoke(NormalTUISpoke):
 
         """
 
-        if key == "":
-            return True
-        else:
+        if key:
             self._entered_text = key
-            return True
+
+        # no other actions scheduled, apply changes
+        self.apply()
+
+        # close the current screen (remove it from the stack)
+        self.close()
+        return True
 
     def prompt(self, args=None):
         """
