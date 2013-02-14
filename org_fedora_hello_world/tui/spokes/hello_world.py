@@ -154,8 +154,9 @@ class HelloWorldSpoke(NormalTUISpoke):
 
         """
 
-        if self._entered_text:
-            return _("Text set: %s") % self._entered_text
+        text = self.data.addons.org_fedora_hello_world.text
+        if text:
+            return _("Text set: %s") % text
         else:
             return _("Text not set")
 
