@@ -70,7 +70,7 @@ class HelloWorldData(AddonData):
         """
 
         # simple example, we just append lines to the text attribute
-        self.text += line
+        self.text += " " + line.strip()
 
     def setup(self, storage, ksdata, instclass):
         """
