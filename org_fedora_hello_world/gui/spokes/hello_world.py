@@ -145,7 +145,7 @@ class HelloWorldSpoke(NormalSpoke):
 
         """
 
-        return bool(self._entry.get_text())
+        return bool(self.data.addons.org_fedora_hello_world.text)
 
     @property
     def status(self):
@@ -159,7 +159,7 @@ class HelloWorldSpoke(NormalSpoke):
 
         """
 
-        text = self._entry.get_text()
+        text = self.data.addons.org_fedora_hello_world.text
         if text:
             return _("Text set: %s") % text
         else:
