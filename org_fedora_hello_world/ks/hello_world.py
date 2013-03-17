@@ -27,7 +27,7 @@ from pyanaconda.constants import ROOT_PATH
 
 # export HelloWorldData class to prevent Anaconda's collect method from taking
 # AddonData class instead of the HelloWorldData class
-# (@see: pyanaconda.kickstart.AnacondaKSHandler.__init__)
+# @see: pyanaconda.kickstart.AnacondaKSHandler.__init__
 __all__ = ["HelloWorldData"]
 
 HELLO_FILE_PATH = "/root/hello_world_addon_output.txt"
@@ -70,7 +70,10 @@ class HelloWorldData(AddonData):
         """
 
         # simple example, we just append lines to the text attribute
-        self.text += " " + line.strip()
+        if self.text is "":
+            self.text = line.strip()
+        else:
+            self.text += " " + line.strip()
 
     def setup(self, storage, ksdata, instclass):
         """
