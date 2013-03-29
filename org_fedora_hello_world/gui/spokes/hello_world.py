@@ -32,19 +32,25 @@ from org_fedora_hello_world.gui.categories.hello_world import HelloWorldCategory
 from pyanaconda.ui.gui import GUIObject
 from pyanaconda.ui.gui.spokes import NormalSpoke
 from pyanaconda.ui.gui.utils import enlightbox
+from pyanaconda.ui.common import FirstbootSpokeMixIn
 
 # export only the spoke, no helper functions, classes or constants
 __all__ = ["HelloWorldSpoke"]
 
-class HelloWorldSpoke(NormalSpoke):
+class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     """
     Class for the Hello world spoke. This spoke will be in the Hello world
-    category and thus on the Summary hub. It is a very simple example of
-    a unit for the Anaconda's graphical user interface.
+    category and thus on the Summary hub. It is a very simple example of a unit
+    for the Anaconda's graphical user interface. Since it is also inherited form
+    the FirstbootSpokeMixIn, it will also appear in the Initial Setup (successor
+    of the Firstboot tool).
+
 
     @see: pyanaconda.ui.common.UIObject
     @see: pyanaconda.ui.common.Spoke
     @see: pyanaconda.ui.gui.GUIObject
+    @see: pyanaconda.ui.common.FirstbootSpokeMixIn
+    @see: pyanaconda.ui.gui.spokes.NormalSpoke
 
     """
 

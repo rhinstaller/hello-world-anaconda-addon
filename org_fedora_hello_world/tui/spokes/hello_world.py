@@ -28,16 +28,20 @@ _ = lambda x: x
 N_ = lambda x: x
 
 from pyanaconda.ui.tui.spokes import NormalTUISpoke
+from pyanaconda.ui.common import FirstbootSpokeMixIn
 
 # export only the HelloWorldSpoke class
 __all__ = ["HelloWorldSpoke"]
 
-class HelloWorldSpoke(NormalTUISpoke):
+class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     """
     Class for the Hello world TUI spoke that is a subclass of NormalTUISpoke. It
     is a simple example of the basic unit for Anaconda's text user interface.
+    Since it is also inherited form the FirstbootSpokeMixIn, it will also appear
+    in the Initial Setup (successor of the Firstboot tool).
 
     @see: pyanaconda.ui.tui.TUISpoke
+    @see: pyanaconda.ui.common.FirstbootSpokeMixIn
     @see: pyanaconda.ui.tui.tuiobject.TUIObject
     @see: pyaanconda.ui.tui.simpleline.Widget
 
