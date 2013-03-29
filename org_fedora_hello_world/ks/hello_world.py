@@ -52,12 +52,12 @@ class HelloWorldData(AddonData):
 
     def __str__(self):
         """
-        What should end up between %addon and %end lines in the resulting
-        kickstart file, i.e. string representation of the stored data.
+        What should end up in the resulting kickstart file, i.e. the %addon
+        section containing string representation of the stored data.
 
         """
 
-        return self.text
+        return "%%addon %s\n%s\n%%end" % (self.name, self.text)
 
     def handle_line(self, line):
         """
