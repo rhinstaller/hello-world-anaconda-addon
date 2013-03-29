@@ -75,6 +75,18 @@ class HelloWorldData(AddonData):
         else:
             self.text += " " + line.strip()
 
+    def finalize(self):
+        """
+        The finalize method that is called when the end of the %addon section
+        (i.e. the %end line) is processed. An addon should check if it has all
+        required data. If not, it may handle the case quietly or it may raise
+        the KickstartValueError exception.
+
+        """
+
+        # no actions needed in this addon
+        pass
+
     def setup(self, storage, ksdata, instclass):
         """
         The setup method that should make changes to the runtime environment
