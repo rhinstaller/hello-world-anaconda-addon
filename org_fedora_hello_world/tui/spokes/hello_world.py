@@ -140,7 +140,7 @@ class HelloWorldSpoke(NormalTUISpoke):
 
         """
 
-        return bool(self._entered_text)
+        return bool(self.data.org_fedora_hello_world.text)
 
     @property
     def status(self):
