@@ -141,6 +141,19 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         pass
 
     @property
+    def ready(self):
+        """
+        The ready property that tells whether the spoke is ready (can be visited)
+        or not. The spoke is made (in)sensitive based on the returned value.
+
+        @rtype: bool
+
+        """
+
+        # this spoke is always ready
+        return True
+
+    @property
     def completed(self):
         """
         The completed property that tells whether all mandatory items on the
@@ -152,6 +165,19 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         """
 
         return bool(self.data.addons.org_fedora_hello_world.text)
+
+    @property
+    def mandatory(self):
+        """
+        The mandatory property that tells whether the spoke is mandatory to be
+        completed to continue in the installation process.
+
+        @rtype: bool
+
+        """
+
+        # this is an optional spoke that is not mandatory to be completed
+        return False
 
     @property
     def status(self):
