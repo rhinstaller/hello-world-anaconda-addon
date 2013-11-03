@@ -116,7 +116,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     def apply(self):
         """
         The apply method that is called when the spoke is left. It should
-        update the contents of self.data with values set in the GUI elements.
+        update the contents of self.data with values set in the spoke.
 
         """
 
@@ -126,7 +126,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         """
         The excecute method that is called when the spoke is left. It is
         supposed to do all changes to the runtime environment according to
-        the values set in the GUI elements.
+        the values set in the spoke.
 
         """
 
@@ -174,8 +174,8 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         @param key: user's input
         @type key: unicode
         @return: if the input should not be handled here, return it, otherwise
-                 return True or False if the input was processed succesfully or
-                 not respectively
+                 return INPUT_PROCESSED or INPUT_DISCARDED if the input was
+                 processed succesfully or not respectively
         @rtype: bool|unicode
 
         """
