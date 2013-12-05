@@ -80,6 +80,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         """
 
         NormalTUISpoke.__init__(self, app, data, storage, payload, instclass)
+        self._entered_text = ""
 
     def initialize(self):
         """
@@ -92,7 +93,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         """
 
         NormalTUISpoke.initialize(self)
-        self._entered_text = ""
 
     def refresh(self, args=None):
         """
