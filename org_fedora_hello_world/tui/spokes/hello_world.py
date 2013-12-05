@@ -27,11 +27,15 @@
 _ = lambda x: x
 N_ = lambda x: x
 
+import re
+
 from pyanaconda.ui.tui.spokes import NormalTUISpoke
+from pyanaconda.ui.tui.spokes import EditTUISpoke
+from pyanaconda.ui.tui.spokes import EditTUISpokeEntry as Entry
 from pyanaconda.ui.common import FirstbootSpokeMixIn
 
-# export only the HelloWorldSpoke class
-__all__ = ["HelloWorldSpoke"]
+# export only the HelloWorldSpoke and HelloWorldEditSpoke classes
+__all__ = ["HelloWorldSpoke", "HelloWorldEditSpoke"]
 
 class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     """
@@ -204,3 +208,67 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         """
 
         return _("Enter a new text or leave empty to use the old one: ")
+
+class _EditData(object):
+    """Auxiliary class for storing data from the example EditSpoke"""
+
+    def __init__(self):
+        """Trivial constructor just defining the fields that will store data"""
+
+        self.checked = False
+        self.shown_input = ""
+        self.hidden_input = ""
+
+class HelloWorldEditSpoke(EditTUISpoke):
+    """Example class demonstrating usage of EditTUISpoke inheritance"""
+
+    title = _("Hello World Edit")
+    category = "localization"
+
+    # simple RE used to specify we only accept a single word as a valid input
+    _valid_input = re.compile(r'\w+')
+
+    # special class attribute defining spoke's entries as:
+    # Entry(TITLE, ATTRIBUTE, CHECKING_RE or TYPE, SHOW_FUNC or SHOW)
+    # where:
+    #   TITLE specifies descriptive title of the entry
+    #   ATTRIBUTE specifies attribute of self.args that should be set to the
+    #             value entered by the user (may contain dots, i.e. may specify
+    #             a deep attribute)
+    #   CHECKING_RE specifies compiled RE used for deciding about
+    #               accepting/rejecting user's input
+    #   TYPE may be one of EditTUISpoke.CHECK or EditTUISpoke.PASSWORD used
+    #        instead of CHECKING_RE for simple checkboxes or password entries,
+    #        respectively
+    #   SHOW_FUNC is a function taking self and self.args and returning True or
+    #             False indicating whether the entry should be shown or not
+    #   SHOW is a boolean value that may be used instead of the SHOW_FUNC
+    #
+    #   :see: pyanaconda.ui.tui.spokes.EditTUISpoke
+    edit_fields = [
+        Entry("Simple checkbox", "checked", EditTUISpoke.CHECK, True),
+        Entry("Always shown input", "shown_input", _valid_input, True),
+        Entry("Conditioned input", "hidden_input", _valid_input,
+              lambda self, args: bool(args.shown_input)),
+        ]
+
+    def __init__(self, app, data, storage, payload, instclass):
+        EditTUISpoke.__init__(self, app, data, storage, payload, instclass)
+
+        # just populate the self.args attribute to have a store for data
+        # typically self.data or a subtree of self.data is used as self.args
+        self.args = _EditData()
+
+    @property
+    def completed(self):
+        # completed if user entered something non-empty to the Conditioned input
+        return bool(self.args.hidden_input)
+
+    @property
+    def status(self):
+        return "Hidden input %s" % ("entered" if self.args.hidden_input
+                                    else "not entered")
+
+    def apply(self):
+        # nothing needed here, values are set in the self.args tree
+        pass
