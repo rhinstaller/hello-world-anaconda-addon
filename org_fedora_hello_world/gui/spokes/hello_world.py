@@ -46,11 +46,11 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     of the Firstboot tool).
 
 
-    @see: pyanaconda.ui.common.UIObject
-    @see: pyanaconda.ui.common.Spoke
-    @see: pyanaconda.ui.gui.GUIObject
-    @see: pyanaconda.ui.common.FirstbootSpokeMixIn
-    @see: pyanaconda.ui.gui.spokes.NormalSpoke
+    :see: pyanaconda.ui.common.UIObject
+    :see: pyanaconda.ui.common.Spoke
+    :see: pyanaconda.ui.gui.GUIObject
+    :see: pyanaconda.ui.common.FirstbootSpokeMixIn
+    :see: pyanaconda.ui.gui.spokes.NormalSpoke
 
     """
 
@@ -79,17 +79,17 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     ### methods defined by API ###
     def __init__(self, data, storage, payload, instclass):
         """
-        @see: pyanaconda.ui.common.Spoke.__init__
-        @param data: data object passed to every spoke to load/store data
+        :see: pyanaconda.ui.common.Spoke.__init__
+        :param data: data object passed to every spoke to load/store data
                      from/to it
-        @type data: pykickstart.base.BaseHandler
-        @param storage: object storing storage-related information
+        :type data: pykickstart.base.BaseHandler
+        :param storage: object storing storage-related information
                         (disks, partitioning, bootloader, etc.)
-        @type storage: blivet.Blivet
-        @param payload: object storing packaging-related information
-        @type payload: pyanaconda.packaging.Payload
-        @param instclass: distribution-specific information
-        @type instclass: pyanaconda.installclass.BaseInstallClass
+        :type storage: blivet.Blivet
+        :param payload: object storing packaging-related information
+        :type payload: pyanaconda.packaging.Payload
+        :param instclass: distribution-specific information
+        :type instclass: pyanaconda.installclass.BaseInstallClass
 
         """
 
@@ -101,7 +101,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         The difference between __init__ and this method is that this may take
         a long time and thus could be called in a separated thread.
 
-        @see: pyanaconda.ui.common.UIObject.initialize
+        :see: pyanaconda.ui.common.UIObject.initialize
 
         """
 
@@ -114,7 +114,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         It should update the UI elements according to the contents of
         self.data.
 
-        @see: pyanaconda.ui.common.UIObject.refresh
+        :see: pyanaconda.ui.common.UIObject.refresh
 
         """
 
@@ -146,7 +146,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         The ready property that tells whether the spoke is ready (can be visited)
         or not. The spoke is made (in)sensitive based on the returned value.
 
-        @rtype: bool
+        :rtype: bool
 
         """
 
@@ -160,7 +160,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         spoke are set, or not. The spoke will be marked on the hub as completed
         or uncompleted acording to the returned value.
 
-        @rtype: bool
+        :rtype: bool
 
         """
 
@@ -172,7 +172,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         The mandatory property that tells whether the spoke is mandatory to be
         completed to continue in the installation process.
 
-        @rtype: bool
+        :rtype: bool
 
         """
 
@@ -187,7 +187,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         also the values themselves. The returned value will appear on the hub
         below the spoke's title.
 
-        @rtype: str
+        :rtype: str
 
         """
 
@@ -218,8 +218,8 @@ class HelloWorldDialog(GUIObject):
     """
     Class for the sample dialog.
 
-    @see: pyanaconda.ui.common.UIObject
-    @see: pyanaconda.ui.gui.GUIObject
+    :see: pyanaconda.ui.common.UIObject
+    :see: pyanaconda.ui.gui.GUIObject
 
     """
 
@@ -237,8 +237,8 @@ class HelloWorldDialog(GUIObject):
         """
         Run dialog and destroy its window.
 
-        @returns: respond id
-        @rtype: int
+        :returns: respond id
+        :rtype: int
 
         """
 
