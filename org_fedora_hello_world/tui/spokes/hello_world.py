@@ -226,7 +226,7 @@ class HelloWorldEditSpoke(EditTUISpoke):
     category = "localization"
 
     # simple RE used to specify we only accept a single word as a valid input
-    _valid_input = re.compile(r'\w+')
+    _valid_input = re.compile(r'^\w+$')
 
     # special class attribute defining spoke's entries as:
     # Entry(TITLE, ATTRIBUTE, CHECKING_RE or TYPE, SHOW_FUNC or SHOW)
