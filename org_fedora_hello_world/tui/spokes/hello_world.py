@@ -148,7 +148,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
 
         """
 
-        return bool(self.data.org_fedora_hello_world.text)
+        return bool(self.data.addons.org_fedora_hello_world.text)
 
     @property
     def status(self):
