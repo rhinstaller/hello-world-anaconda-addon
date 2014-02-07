@@ -54,7 +54,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     ### class attributes defined by API ###
 
     # title of the spoke
-    title = _("Hello World")
+    title = N_("Hello World")
 
     # categories in text mode are simple strings that are not shown anywhere,
     # every hub just has a list of categories it should display spokes from
@@ -222,7 +222,7 @@ class _EditData(object):
 class HelloWorldEditSpoke(EditTUISpoke):
     """Example class demonstrating usage of EditTUISpoke inheritance"""
 
-    title = _("Hello World Edit")
+    title = N_("Hello World Edit")
     category = "localization"
 
     # simple RE used to specify we only accept a single word as a valid input
