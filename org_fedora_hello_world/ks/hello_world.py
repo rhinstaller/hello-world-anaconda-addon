@@ -25,6 +25,8 @@ import os.path
 from pyanaconda.addons import AddonData
 from pyanaconda.constants import ROOT_PATH
 
+from pykickstart.options import KSOptionParser
+
 # export HelloWorldData class to prevent Anaconda's collect method from taking
 # AddonData class instead of the HelloWorldData class
 # :see: pyanaconda.kickstart.AnacondaKSHandler.__init__
@@ -49,6 +51,7 @@ class HelloWorldData(AddonData):
 
         AddonData.__init__(self, name)
         self.text = ""
+        self.reverse = False
 
     def __str__(self):
         """
@@ -57,7 +60,45 @@ class HelloWorldData(AddonData):
 
         """
 
-        return "%%addon %s\n%s\n%%end" % (self.name, self.text)
+        addon_str = "%%addon %s" % self.name
+
+        if self.reverse:
+            addon_str += "--reverse"
+
+        addon_str += "\n%s\n%%end" % self.text
+        return addon_str
+
+    def handle_header(self, lineno, args):
+        """
+        The handle_header method is called to parse additional arguments in the
+        %addon section line.
+
+        args is a list of all the arguments following the addon ID. For
+        example, for the line:
+        
+            %addon org_fedora_hello_world --reverse --arg2="example"
+
+        handle_header will be called with args=['--reverse', '--arg2="example"']
+
+        :param lineno: the current line number in the kickstart file
+        :type lineno: int
+        :param args: the list of arguments from the %addon line
+        :type args: list
+        """
+
+        op = KSOptionParser()
+        op.add_option("--reverse", action="store_true", default=False,
+                dest="reverse", help="Reverse the display of the addon text")
+        (opts, extra) = op.parse_args(args=args, lineno=lineno)
+        
+        # Reject any additional arguments. Since AddonData.handle_header
+        # rejects any arguments, we can use it to create an error message
+        # and raise an exception.
+        if extra:
+            AddonData.handle_header(self, lineno, args)
+
+        # Store the result of the option parsing
+        self.reverse = opts.reverse
 
     def handle_line(self, line):
         """

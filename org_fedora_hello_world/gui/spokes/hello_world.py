@@ -192,6 +192,11 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         """
 
         text = self.data.addons.org_fedora_hello_world.text
+
+        # If --reverse was specified in the kickstart, reverse the text
+        if self.data.addons.org_fedora_hello_world.reverse:
+            text = text[::-1]
+
         if text:
             return _("Text set: %s") % text
         else:
