@@ -63,9 +63,9 @@ class HelloWorldData(AddonData):
         addon_str = "%%addon %s" % self.name
 
         if self.reverse:
-            addon_str += "--reverse"
+            addon_str += " --reverse"
 
-        addon_str += "\n%s\n%%end" % self.text
+        addon_str += "\n%s\n%%end\n" % self.text
         return addon_str
 
     def handle_header(self, lineno, args):
