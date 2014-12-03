@@ -76,7 +76,7 @@ class HelloWorldData(AddonData):
 
         args is a list of all the arguments following the addon ID. For
         example, for the line:
-        
+
             %addon org_fedora_hello_world --reverse --arg2="example"
 
         handle_header will be called with args=['--reverse', '--arg2="example"']
@@ -91,7 +91,7 @@ class HelloWorldData(AddonData):
         op.add_option("--reverse", action="store_true", default=False,
                 dest="reverse", help="Reverse the display of the addon text")
         (opts, extra) = op.parse_args(args=args, lineno=lineno)
-        
+
         # Reject any additional arguments.
         if extra:
             msg = "Unhandled arguments on %%addon line for %s" % self.name
