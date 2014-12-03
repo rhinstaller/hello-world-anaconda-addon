@@ -26,6 +26,7 @@ from pyanaconda.addons import AddonData
 from pyanaconda.constants import ROOT_PATH
 
 from pykickstart.options import KSOptionParser
+from pykickstart.errors import KickstartParseError, formatErrorMsg
 
 # export HelloWorldData class to prevent Anaconda's collect method from taking
 # AddonData class instead of the HelloWorldData class
@@ -91,11 +92,13 @@ class HelloWorldData(AddonData):
                 dest="reverse", help="Reverse the display of the addon text")
         (opts, extra) = op.parse_args(args=args, lineno=lineno)
         
-        # Reject any additional arguments. Since AddonData.handle_header
-        # rejects any arguments, we can use it to create an error message
-        # and raise an exception.
+        # Reject any additional arguments.
         if extra:
-            AddonData.handle_header(self, lineno, args)
+            msg = "Unhandled arguments on %%addon line for %s" % self.name
+            if lineno != None:
+                raise KickstartParseError(formatErrorMsg(lineno, msg=msg))
+            else:
+                raise KickstartParseError(msg)
 
         # Store the result of the option parsing
         self.reverse = opts.reverse
