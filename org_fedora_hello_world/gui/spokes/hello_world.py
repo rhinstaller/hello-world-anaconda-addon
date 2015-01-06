@@ -215,7 +215,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         dialog = HelloWorldDialog(self.data)
 
         # show dialog above the lightbox
-        with enlightbox(self.window, dialog.window):
+        with self.main_window.enlightbox(dialog.window):
             dialog.run()
 
 class HelloWorldDialog(GUIObject):
