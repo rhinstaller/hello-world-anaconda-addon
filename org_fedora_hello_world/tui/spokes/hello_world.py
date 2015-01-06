@@ -29,6 +29,8 @@ N_ = lambda x: x
 
 import re
 
+# the path to addons is in sys.path so we can import things from org_fedora_hello_world
+from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
 from pyanaconda.ui.tui.spokes import NormalTUISpoke
 from pyanaconda.ui.tui.spokes import EditTUISpoke
 from pyanaconda.ui.tui.spokes import EditTUISpokeEntry as Entry
@@ -56,10 +58,8 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     # title of the spoke
     title = N_("Hello World")
 
-    # categories in text mode are simple strings that are not shown anywhere,
-    # every hub just has a list of categories it should display spokes from
-    # let's just use one of the standard categories defined for the Summary hub
-    category = "localization"
+    # category this spoke belongs to
+    category = HelloWorldCategory
 
     def __init__(self, app, data, storage, payload, instclass):
         """
@@ -228,7 +228,7 @@ class HelloWorldEditSpoke(EditTUISpoke):
     """Example class demonstrating usage of EditTUISpoke inheritance"""
 
     title = N_("Hello World Edit")
-    category = "localization"
+    category = HelloWorldCategory
 
     # simple RE used to specify we only accept a single word as a valid input
     _valid_input = re.compile(r'^\w+$')

@@ -28,10 +28,9 @@ _ = lambda x: x
 N_ = lambda x: x
 
 # the path to addons is in sys.path so we can import things from org_fedora_hello_world
-from org_fedora_hello_world.gui.categories.hello_world import HelloWorldCategory
+from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
 from pyanaconda.ui.gui import GUIObject
 from pyanaconda.ui.gui.spokes import NormalSpoke
-from pyanaconda.ui.gui.utils import enlightbox
 from pyanaconda.ui.common import FirstbootSpokeMixIn
 
 # export only the spoke, no helper functions, classes or constants
