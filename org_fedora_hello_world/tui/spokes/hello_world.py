@@ -29,8 +29,6 @@ N_ = lambda x: x
 
 import re
 
-# the path to addons is in sys.path so we can import things from org_fedora_hello_world
-from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
 from pyanaconda.ui.tui.spokes import NormalTUISpoke
 from pyanaconda.ui.tui.spokes import EditTUISpoke
 from pyanaconda.ui.tui.spokes import EditTUISpokeEntry as Entry
@@ -38,6 +36,7 @@ from pyanaconda.ui.common import FirstbootSpokeMixIn
 
 # export only the HelloWorldSpoke and HelloWorldEditSpoke classes
 __all__ = ["HelloWorldSpoke", "HelloWorldEditSpoke"]
+
 
 class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     """
@@ -59,7 +58,9 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     title = N_("Hello World")
 
     # category this spoke belongs to
-    category = HelloWorldCategory
+    # Note on rhel7, there is no tui categories module/class, so
+    # just used the string attribute based ones.
+    category = "system"
 
     def __init__(self, app, data, storage, payload, instclass):
         """
@@ -228,7 +229,8 @@ class HelloWorldEditSpoke(EditTUISpoke):
     """Example class demonstrating usage of EditTUISpoke inheritance"""
 
     title = N_("Hello World Edit")
-    category = HelloWorldCategory
+    #category = HelloWorldCategory
+    category = "system"
 
     # simple RE used to specify we only accept a single word as a valid input
     _valid_input = re.compile(r'^\w+$')

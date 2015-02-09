@@ -21,9 +21,11 @@
 
 N_ = lambda x: x
 
-from pyanaconda.ui.categories import SpokeCategory
+from pyanaconda.ui.gui.categories import SpokeCategory
+from pyanaconda.ui.gui.hubs.summary import SummaryHub
 
 __all__ = ["HelloWorldCategory"]
+
 
 class HelloWorldCategory(SpokeCategory):
     """
@@ -34,7 +36,5 @@ class HelloWorldCategory(SpokeCategory):
     included in.
 
     """
-
-    displayOnHubGUI = "SummaryHub"
-    displayOnHubTUI = "SummaryHub"
+    displayOnHub = SummaryHub
     title = N_("HELLO WORLD")
