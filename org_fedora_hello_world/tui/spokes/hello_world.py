@@ -35,6 +35,7 @@ from pyanaconda.ui.tui.spokes import NormalTUISpoke
 from pyanaconda.ui.tui.spokes import EditTUISpoke
 from pyanaconda.ui.tui.spokes import EditTUISpokeEntry as Entry
 from pyanaconda.ui.common import FirstbootSpokeMixIn
+from pyanaconda.ui.tui.simpleline import Prompt
 
 # export only the HelloWorldSpoke and HelloWorldEditSpoke classes
 __all__ = ["HelloWorldSpoke", "HelloWorldEditSpoke"]
@@ -204,15 +205,16 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         The prompt method that is called by the main loop to get the prompt
         for this screen.
 
+        :see: pyanconda.ui.tui.simpleline.Prompt
+
         :param args: optional argument that can be passed to App.switch_screen*
                      methods
         :type args: anything
         :return: text that should be used in the prompt for the input
-        :rtype: unicode|None
-
+        :rtype: instance of pyanconda.ui.tui.simpleline.Prompt or None
         """
 
-        return _("Enter a new text or leave empty to use the old one: ")
+        return Prompt(_("Enter a new text or leave empty to use the old one"))
 
 class _EditData(object):
     """Auxiliary class for storing data from the example EditSpoke"""
