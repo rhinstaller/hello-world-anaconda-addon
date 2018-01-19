@@ -17,6 +17,13 @@
 #
 # Red Hat Author(s): Vratislav Podzimek <vpodzime@redhat.com>
 #
+#
+# NOTE: Anaconda is using Simpleline library for Text User Interface.
+#       To learn how to use Simpleline look on the documentation:
+#
+#       http://python-simpleline.readthedocs.io/en/latest/
+#
+
 
 """Module with the class for the Hello world TUI spoke."""
 
@@ -32,10 +39,15 @@ import re
 # the path to addons is in sys.path so we can import things from org_fedora_hello_world
 from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
 from pyanaconda.ui.tui.spokes import NormalTUISpoke
-from pyanaconda.ui.tui.spokes import EditTUISpoke
-from pyanaconda.ui.tui.spokes import EditTUISpokeEntry as Entry
 from pyanaconda.ui.common import FirstbootSpokeMixIn
-from pyanaconda.ui.tui.simpleline import Prompt
+
+# Simpleline's dialog configured for use in Anaconda
+from pyanaconda.ui.tui.tuiobject import Dialog, PasswordDialog
+
+from simpleline.render.prompt import Prompt
+from simpleline.render.screen import InputState
+from simpleline.render.containers import ListColumnContainer
+from simpleline.render.widgets import CheckboxWidget, EntryWidget
 
 # export only the HelloWorldSpoke and HelloWorldEditSpoke classes
 __all__ = ["HelloWorldSpoke", "HelloWorldEditSpoke"]
@@ -49,28 +61,18 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
 
     :see: pyanaconda.ui.tui.TUISpoke
     :see: pyanaconda.ui.common.FirstbootSpokeMixIn
-    :see: pyanaconda.ui.tui.tuiobject.TUIObject
-    :see: pyaanconda.ui.tui.simpleline.Widget
+    :see: simpleline.render.widgets.Widget
 
     """
 
     ### class attributes defined by API ###
 
-    # title of the spoke
-    title = N_("Hello World")
-
     # category this spoke belongs to
     category = HelloWorldCategory
 
-    def __init__(self, app, data, storage, payload, instclass):
+    def __init__(self, data, storage, payload, instclass):
         """
-        :see: pyanaconda.ui.tui.base.UIScreen
-        :see: pyanaconda.ui.tui.base.App
-        :param app: reference to application which is a main class for TUI
-                    screen handling, it is responsible for mainloop control
-                    and keeping track of the stack where all TUI screens are
-                    scheduled
-        :type app: instance of pyanaconda.ui.tui.base.App
+        :see: simpleline.render.screen.UIScreen
         :param data: data object passed to every spoke to load/store data
                      from/to it
         :type data: pykickstart.base.BaseHandler
@@ -84,7 +86,8 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
 
         """
 
-        NormalTUISpoke.__init__(self, app, data, storage, payload, instclass)
+        NormalTUISpoke.__init__(self, data, storage, payload, instclass)
+        self.title = N_("Hello World")
         self._entered_text = ""
 
     def initialize(self):
@@ -106,17 +109,17 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         self.data.
 
         :see: pyanaconda.ui.common.UIObject.refresh
-        :see: pyanaconda.ui.tui.base.UIScreen.refresh
+        :see: simpleline.render.screen.UIScreen.refresh
         :param args: optional argument that may be used when the screen is
-                     scheduled (passed to App.switch_screen* methods)
+                     scheduled
         :type args: anything
-        :return: whether this screen requests input or not
-        :rtype: bool
 
         """
 
+        # call parent method to setup basic container with screen title set
+        super().refresh(args)
+
         self._entered_text = self.data.addons.org_fedora_hello_world.text
-        return True
 
     def apply(self):
         """
@@ -129,7 +132,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
 
     def execute(self):
         """
-        The excecute method that is called when the spoke is left. It is
+        The execute method that is called when the spoke is left. It is
         supposed to do all changes to the runtime environment according to
         the values set in the spoke.
 
@@ -143,7 +146,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         """
         The completed property that tells whether all mandatory items on the
         spoke are set, or not. The spoke will be marked on the hub as completed
-        or uncompleted acording to the returned value.
+        or uncompleted according to the returned value.
 
         :rtype: bool
 
@@ -179,14 +182,14 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         The input method that is called by the main loop on user's input.
 
         :param args: optional argument that may be used when the screen is
-                     scheduled (passed to App.switch_screen* methods)
+                     scheduled
         :type args: anything
         :param key: user's input
         :type key: unicode
         :return: if the input should not be handled here, return it, otherwise
-                 return INPUT_PROCESSED or INPUT_DISCARDED if the input was
-                 processed succesfully or not respectively
-        :rtype: bool|unicode
+                 return InputState.PROCESSED or InputState.DISCARDED if the input was
+                 processed successfully or not respectively
+        :rtype: enum InputState
 
         """
 
@@ -198,84 +201,174 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
 
         # close the current screen (remove it from the stack)
         self.close()
-        return True
+        return InputState.PROCESSED
 
     def prompt(self, args=None):
         """
         The prompt method that is called by the main loop to get the prompt
         for this screen.
 
-        :see: pyanconda.ui.tui.simpleline.Prompt
+        :see: simpleline.render.prompt.Prompt
 
         :param args: optional argument that can be passed to App.switch_screen*
                      methods
         :type args: anything
         :return: text that should be used in the prompt for the input
-        :rtype: instance of pyanconda.ui.tui.simpleline.Prompt or None
+        :rtype: instance of simpleline.render.prompt.Prompt or None
         """
 
         return Prompt(_("Enter a new text or leave empty to use the old one"))
 
-class _EditData(object):
-    """Auxiliary class for storing data from the example EditSpoke"""
 
-    def __init__(self):
-        """Trivial constructor just defining the fields that will store data"""
+class HelloWorldEditSpoke(NormalTUISpoke):
+    """Example class demonstrating usage of editing in TUI"""
 
-        self.checked = False
-        self.shown_input = ""
-        self.hidden_input = ""
-
-class HelloWorldEditSpoke(EditTUISpoke):
-    """Example class demonstrating usage of EditTUISpoke inheritance"""
-
-    title = N_("Hello World Edit")
     category = HelloWorldCategory
 
-    # simple RE used to specify we only accept a single word as a valid input
-    _valid_input = re.compile(r'^\w+$')
+    def __init__(self, data, storage, payload, instclass):
+        """
+        :see: simpleline.render.screen.UIScreen
+        :param data: data object passed to every spoke to load/store data
+                     from/to it
+        :type data: pykickstart.base.BaseHandler
+        :param storage: object storing storage-related information
+                        (disks, partitioning, bootloader, etc.)
+        :type storage: blivet.Blivet
+        :param payload: object storing packaging-related information
+        :type payload: pyanaconda.packaging.Payload
+        :param instclass: distribution-specific information
+        :type instclass: pyanaconda.installclass.BaseInstallClass
 
-    # special class attribute defining spoke's entries as:
-    # Entry(TITLE, ATTRIBUTE, CHECKING_RE or TYPE, SHOW_FUNC or SHOW)
-    # where:
-    #   TITLE specifies descriptive title of the entry
-    #   ATTRIBUTE specifies attribute of self.args that should be set to the
-    #             value entered by the user (may contain dots, i.e. may specify
-    #             a deep attribute)
-    #   CHECKING_RE specifies compiled RE used for deciding about
-    #               accepting/rejecting user's input
-    #   TYPE may be one of EditTUISpoke.CHECK or EditTUISpoke.PASSWORD used
-    #        instead of CHECKING_RE for simple checkboxes or password entries,
-    #        respectively
-    #   SHOW_FUNC is a function taking self and self.args and returning True or
-    #             False indicating whether the entry should be shown or not
-    #   SHOW is a boolean value that may be used instead of the SHOW_FUNC
-    #
-    #   :see: pyanaconda.ui.tui.spokes.EditTUISpoke
-    edit_fields = [
-        Entry("Simple checkbox", "checked", EditTUISpoke.CHECK, True),
-        Entry("Always shown input", "shown_input", _valid_input, True),
-        Entry("Conditioned input", "hidden_input", _valid_input,
-              lambda self, args: bool(args.shown_input)),
-        ]
+        """
 
-    def __init__(self, app, data, storage, payload, instclass):
-        EditTUISpoke.__init__(self, app, data, storage, payload, instclass)
+        NormalTUISpoke.__init__(self, data, storage, payload, instclass)
 
-        # just populate the self.args attribute to have a store for data
-        # typically self.data or a subtree of self.data is used as self.args
-        self.args = _EditData()
+        self.title = N_("Hello World Edit")
+        self._container = None
+        # values for user to set
+        self._checked = False
+        self._unconditional_input = ""
+        self._conditional_input = ""
+
+    def refresh(self, args=None):
+        """
+        The refresh method that is called every time the spoke is displayed.
+        It should update the UI elements according to the contents of
+        self.data.
+
+        :see: pyanaconda.ui.common.UIObject.refresh
+        :see: simpleline.render.screen.UIScreen.refresh
+        :param args: optional argument that may be used when the screen is
+                     scheduled
+        :type args: anything
+
+        """
+
+        super().refresh(args)
+        self._container = ListColumnContainer(columns=1)
+
+        # add ListColumnContainer to window (main window container)
+        # this will automatically add numbering and will call callbacks when required
+        self.window.add(self._container)
+
+        self._container.add(CheckboxWidget(title="Simple checkbox", completed=self._checked),
+                            callback=self._checkbox_called)
+        self._container.add(EntryWidget(title="Unconditional input",
+                                        value=self._unconditional_input),
+                            callback=self._get_unconditional_input)
+
+        # show conditional input only if the checkbox is checked
+        if self._checked:
+            self._container.add(EntryWidget(title="Conditional input",
+                                            value="Password set" if self._conditional_input
+                                                  else ""),
+                                callback=self._get_conditional_input)
+
+        self._window.add_separator()
+
+    def _checkbox_called(self, data):
+        """Callback when user wants to switch checkbox.
+
+        :param data: can be passed when adding callback in container (not used here)
+        :type data: anything
+        """
+
+        self._checked = not self._checked
+
+    def _get_unconditional_input(self, data):
+        """Callback when user wants to set unconditional input.
+
+        :param data: can be passed when adding callback in container (not used here)
+        :type data: anything
+        """
+
+        dialog = Dialog("Unconditional input", conditions=[self._check_user_input])
+
+        self._unconditional_input = dialog.run()
+
+    def _get_conditional_input(self, data):
+        """Callback when user wants to set conditional input.
+
+        :param data: can be passed when adding callback in container (not used here)
+        :type data: anything
+        """
+
+        # password policy for setting root password
+        password_policy = self.data.anaconda.pwpolicy.get_policy("root", fallback_to_default=True)
+        dialog = PasswordDialog("Unconditional input", policy=password_policy)
+
+        self._conditional_input = dialog.run()
+
+    def _check_user_input(self, user_input, report_func):
+        """Check if user has wrote a valid value.
+
+        :param user_input: user input for validation
+        :type user_input: str
+
+        :param report_func: function for reporting errors on user input
+        :type report_func: func with one param
+        """
+
+        if re.match(r'^\w+$', user_input):
+            return True
+        else:
+            report_func("You must set a one word")
+            return False
+
+    def input(self, args, key):
+        """
+        The input method that is called by the main loop on user's input.
+
+        :param args: optional argument that may be used when the screen is
+                     scheduled
+        :type args: anything
+        :param key: user's input
+        :type key: unicode
+        :return: if the input should not be handled here, return it, otherwise
+                 return InputState.PROCESSED or InputState.DISCARDED if the input was
+                 processed successfully or not respectively
+        :rtype: enum InputState
+
+        """
+
+        if self._container.process_user_input(key):
+            # redraw or close must be called before PROCESSED
+            self.redraw()
+            return InputState.PROCESSED
+        else:
+            return super().input(args=args, key=key)
 
     @property
     def completed(self):
         # completed if user entered something non-empty to the Conditioned input
-        return bool(self.args.hidden_input)
+        return bool(self._conditional_input)
 
     @property
     def status(self):
-        return "Hidden input %s" % ("entered" if self.args.hidden_input
+        return "Hidden input %s" % ("entered" if self._conditional_input
                                     else "not entered")
 
     def apply(self):
-        # nothing needed here, values are set in the self.args tree
+
+        # nothing to do here
         pass
