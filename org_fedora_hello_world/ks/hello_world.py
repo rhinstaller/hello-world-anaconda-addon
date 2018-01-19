@@ -35,6 +35,7 @@ __all__ = ["HelloWorldData"]
 
 HELLO_FILE_PATH = "/root/hello_world_addon_output.txt"
 
+
 class HelloWorldData(AddonData):
     """
     Class parsing and storing data for the Hello world addon.

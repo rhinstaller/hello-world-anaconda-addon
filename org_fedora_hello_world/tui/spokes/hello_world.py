@@ -27,13 +27,6 @@
 
 """Module with the class for the Hello world TUI spoke."""
 
-# import gettext
-# _ = lambda x: gettext.ldgettext("hello-world-anaconda-plugin", x)
-
-# will never be translated
-_ = lambda x: x
-N_ = lambda x: x
-
 import re
 
 # the path to addons is in sys.path so we can import things from org_fedora_hello_world
@@ -51,6 +44,14 @@ from simpleline.render.widgets import CheckboxWidget, EntryWidget
 
 # export only the HelloWorldSpoke and HelloWorldEditSpoke classes
 __all__ = ["HelloWorldSpoke", "HelloWorldEditSpoke"]
+
+# import gettext
+# _ = lambda x: gettext.ldgettext("hello-world-anaconda-plugin", x)
+
+# will never be translated
+_ = lambda x: x
+N_ = lambda x: x
+
 
 class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     """

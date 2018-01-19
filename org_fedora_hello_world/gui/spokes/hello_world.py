@@ -20,13 +20,6 @@
 
 """Module with the HelloWorldSpoke class."""
 
-# import gettext
-# _ = lambda x: gettext.ldgettext("hello-world-anaconda-plugin", x)
-
-# will never be translated
-_ = lambda x: x
-N_ = lambda x: x
-
 # the path to addons is in sys.path so we can import things from org_fedora_hello_world
 from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
 from pyanaconda.ui.gui import GUIObject
@@ -35,6 +28,14 @@ from pyanaconda.ui.common import FirstbootSpokeMixIn
 
 # export only the spoke, no helper functions, classes or constants
 __all__ = ["HelloWorldSpoke"]
+
+# import gettext
+# _ = lambda x: gettext.ldgettext("hello-world-anaconda-plugin", x)
+
+# will never be translated
+_ = lambda x: x
+N_ = lambda x: x
+
 
 class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     """
@@ -201,7 +202,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         else:
             return _("Text not set")
 
-
     ### handlers ###
     def on_entry_icon_clicked(self, entry, *args):
         """Handler for the textEntry's "icon-release" signal."""
@@ -217,6 +217,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         # show dialog above the lightbox
         with self.main_window.enlightbox(dialog.window):
             dialog.run()
+
 
 class HelloWorldDialog(GUIObject):
     """
