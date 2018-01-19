@@ -23,7 +23,7 @@
 import os.path
 
 from pyanaconda.addons import AddonData
-from pyanaconda.iutil import getSysroot
+from pyanaconda.core.util import getSysroot
 
 from pykickstart.options import KSOptionParser
 from pykickstart.errors import KickstartParseError, formatErrorMsg
