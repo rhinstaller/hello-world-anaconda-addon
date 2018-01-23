@@ -19,11 +19,15 @@
 #
 """Hello world category module"""
 
-N_ = lambda x: x
+
+
 
 from pyanaconda.ui.categories import SpokeCategory
 
 __all__ = ["HelloWorldCategory"]
+
+N_ = lambda x: x
+
 
 class HelloWorldCategory(SpokeCategory):
     """

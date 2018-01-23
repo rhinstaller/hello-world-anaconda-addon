@@ -23,7 +23,7 @@
 import os.path
 
 from pyanaconda.addons import AddonData
-from pyanaconda.iutil import getSysroot
+from pyanaconda.core.util import getSysroot
 
 from pykickstart.options import KSOptionParser
 from pykickstart.errors import KickstartParseError, formatErrorMsg
@@ -34,6 +34,7 @@ from pykickstart.errors import KickstartParseError, formatErrorMsg
 __all__ = ["HelloWorldData"]
 
 HELLO_FILE_PATH = "/root/hello_world_addon_output.txt"
+
 
 class HelloWorldData(AddonData):
     """
