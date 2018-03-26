@@ -52,7 +52,7 @@ class HelloWorldData(AddonData):
         """
 
         AddonData.__init__(self, name)
-        self.text = ""
+        #self.text = ""
         self.reverse = False
 
     def __str__(self):
@@ -64,10 +64,10 @@ class HelloWorldData(AddonData):
 
         addon_str = "%%addon %s" % self.name
 
-        if self.reverse:
-            addon_str += " --reverse"
+        #if self.reverse:
+        #    addon_str += " --reverse"
 
-        addon_str += "\n%s\n%%end\n" % self.text
+        #addon_str += "\n%s\n%%end\n" % self.text
         return addon_str
 
     def handle_header(self, lineno, args):
