@@ -23,7 +23,17 @@
 import os.path
 
 from pyanaconda.addons import AddonData
-from pyanaconda.iutil import getSysroot
+
+try:
+    from pyanaconda.core.configuration.anaconda import conf
+    def getSysroot():
+        return conf.target.system_root
+except ImportError:
+    # legacy function call for older anaconda
+    try:
+        from pyanaconda.core.util import getSysroot
+    except ImportError:
+        from pyanaconda.iutil import getSysroot
 
 from pykickstart.options import KSOptionParser
 from pykickstart.errors import KickstartParseError, formatErrorMsg
