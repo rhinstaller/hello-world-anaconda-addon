@@ -71,7 +71,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     # category this spoke belongs to
     category = HelloWorldCategory
 
-    def __init__(self, data, storage, payload, instclass):
+    def __init__(self, data, storage, payload):
         """
         :see: simpleline.render.screen.UIScreen
         :param data: data object passed to every spoke to load/store data
@@ -87,7 +87,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
 
         """
 
-        NormalTUISpoke.__init__(self, data, storage, payload, instclass)
+        NormalTUISpoke.__init__(self, data, storage, payload)
         self.title = N_("Hello World")
         self._entered_text = ""
 
@@ -226,7 +226,7 @@ class HelloWorldEditSpoke(NormalTUISpoke):
 
     category = HelloWorldCategory
 
-    def __init__(self, data, storage, payload, instclass):
+    def __init__(self, data, storage, payload):
         """
         :see: simpleline.render.screen.UIScreen
         :param data: data object passed to every spoke to load/store data
@@ -242,7 +242,7 @@ class HelloWorldEditSpoke(NormalTUISpoke):
 
         """
 
-        NormalTUISpoke.__init__(self, data, storage, payload, instclass)
+        NormalTUISpoke.__init__(self, data, storage, payload)
 
         self.title = N_("Hello World Edit")
         self._container = None
