@@ -23,7 +23,7 @@
 import os.path
 
 from pyanaconda.addons import AddonData
-from pyanaconda.iutil import getSysroot
+from pyanaconda.core.util import getSysroot
 
 from pykickstart.options import KSOptionParser
 from pykickstart.errors import KickstartParseError, formatErrorMsg
@@ -132,7 +132,7 @@ class HelloWorldData(AddonData):
         # no actions needed in this addon
         pass
 
-    def setup(self, storage, ksdata, instclass, payload):
+    def setup(self, storage, ksdata, instclass):
         """
         The setup method that should make changes to the runtime environment
         according to the data stored in this object.
@@ -154,7 +154,7 @@ class HelloWorldData(AddonData):
         # no actions needed in this addon
         pass
 
-    def execute(self, storage, ksdata, instclass, users, payload):
+    def execute(self, storage, ksdata, instclass, users):
         """
         The execute method that should make changes to the installed system. It
         is called only once in the post-install setup phase.
