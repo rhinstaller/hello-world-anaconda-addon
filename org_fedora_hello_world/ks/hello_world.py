@@ -23,7 +23,7 @@
 import os.path
 
 from pyanaconda.addons import AddonData
-from pyanaconda.core.util import getSysroot
+from pyanaconda.core.configuration.anaconda import conf
 
 from pykickstart.options import KSOptionParser
 from pykickstart.version import F30
@@ -162,6 +162,6 @@ class HelloWorldData(AddonData):
 
         """
 
-        hello_file_path = os.path.normpath(getSysroot() + HELLO_FILE_PATH)
+        hello_file_path = os.path.normpath(conf.target.system_root + HELLO_FILE_PATH)
         with open(hello_file_path, "w") as fobj:
             fobj.write("%s\n" % self.text)
