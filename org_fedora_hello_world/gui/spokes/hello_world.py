@@ -77,7 +77,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     title = N_("_HELLO WORLD")
 
     ### methods defined by API ###
-    def __init__(self, data, storage, payload, instclass):
+    def __init__(self, data, storage, payload):
         """
         :see: pyanaconda.ui.common.Spoke.__init__
         :param data: data object passed to every spoke to load/store data
@@ -93,7 +93,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
 
         """
 
-        NormalSpoke.__init__(self, data, storage, payload, instclass)
+        NormalSpoke.__init__(self, data, storage, payload)
 
     def initialize(self):
         """
