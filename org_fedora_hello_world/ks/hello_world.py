@@ -26,11 +26,12 @@ from pyanaconda.addons import AddonData
 from pyanaconda.core.util import getSysroot
 
 from pykickstart.options import KSOptionParser
-from pykickstart.errors import KickstartParseError, formatErrorMsg
+from pykickstart.version import F30
 
 # export HelloWorldData class to prevent Anaconda's collect method from taking
 # AddonData class instead of the HelloWorldData class
 # :see: pyanaconda.kickstart.AnacondaKSHandler.__init__
+
 __all__ = ["HelloWorldData"]
 
 HELLO_FILE_PATH = "/root/hello_world_addon_output.txt"
@@ -87,22 +88,20 @@ class HelloWorldData(AddonData):
         :param args: the list of arguments from the %addon line
         :type args: list
         """
+        op = KSOptionParser(
+            prog="addon org_fedora_hello_world", version=F30,
+            description="Configure the Hello World Addon.")
 
-        op = KSOptionParser()
-        op.add_option("--reverse", action="store_true", default=False,
-                dest="reverse", help="Reverse the display of the addon text")
-        (opts, extra) = op.parse_args(args=args, lineno=lineno)
+        op.add_argument(
+            "--reverse", action="store_true", default=False, version=F30,
+            dest="reverse", help="Reverse the display of the addon text."
+        )
 
-        # Reject any additional arguments.
-        if extra:
-            msg = "Unhandled arguments on %%addon line for %s" % self.name
-            if lineno != None:
-                raise KickstartParseError(formatErrorMsg(lineno, msg=msg))
-            else:
-                raise KickstartParseError(msg)
+        # Parse the arguments.
+        ns = op.parse_args(args=args, lineno=lineno)
 
-        # Store the result of the option parsing
-        self.reverse = opts.reverse
+        # Store the result of the parsing.
+        self.reverse = ns.reverse
 
     def handle_line(self, line):
         """
