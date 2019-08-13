@@ -142,8 +142,6 @@ class HelloWorldData(AddonData):
         :param ksdata: data parsed from the kickstart file and set in the
                        installation process
         :type ksdata: pykickstart.base.BaseHandler instance
-        :param instclass: distribution-specific information
-        :type instclass: pyanaconda.installclass.BaseInstallClass
         :param payload: object managing packages and environment groups
                         for the installation
         :type payload: any class inherited from the pyanaconda.packaging.Payload

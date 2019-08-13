@@ -88,9 +88,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         :type storage: blivet.Blivet
         :param payload: object storing packaging-related information
         :type payload: pyanaconda.packaging.Payload
-        :param instclass: distribution-specific information
-        :type instclass: pyanaconda.installclass.BaseInstallClass
-
         """
 
         NormalSpoke.__init__(self, data, storage, payload)
