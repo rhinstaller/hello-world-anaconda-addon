@@ -19,9 +19,6 @@
 #
 """Hello world category module"""
 
-
-
-
 from pyanaconda.ui.categories import SpokeCategory
 
 __all__ = ["HelloWorldCategory"]
@@ -30,15 +27,11 @@ N_ = lambda x: x
 
 
 class HelloWorldCategory(SpokeCategory):
-    """
+    """The Hello Word category.
+
     Class for the Hello world category. Category groups related spokes
-    together. Both logically and visually (creates a box on a hub). It
-    references a class of the hub it is supposed to be placed on. On the
-    other hand spokes reference a class of the category they should be
-    included in.
-
+    together. Both logically and visually (creates a box on a hub).
+    Spokes reference a class of the category they should be included in.
     """
 
-    displayOnHubGUI = "SummaryHub"
-    displayOnHubTUI = "SummaryHub"
     title = N_("HELLO WORLD")
