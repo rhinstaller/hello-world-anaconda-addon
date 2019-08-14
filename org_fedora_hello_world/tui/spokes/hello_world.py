@@ -82,9 +82,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         :type storage: blivet.Blivet
         :param payload: object storing packaging-related information
         :type payload: pyanaconda.packaging.Payload
-        :param instclass: distribution-specific information
-        :type instclass: pyanaconda.installclass.BaseInstallClass
-
         """
 
         NormalTUISpoke.__init__(self, data, storage, payload)
@@ -237,9 +234,6 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         :type storage: blivet.Blivet
         :param payload: object storing packaging-related information
         :type payload: pyanaconda.packaging.Payload
-        :param instclass: distribution-specific information
-        :type instclass: pyanaconda.installclass.BaseInstallClass
-
         """
 
         NormalTUISpoke.__init__(self, data, storage, payload)
