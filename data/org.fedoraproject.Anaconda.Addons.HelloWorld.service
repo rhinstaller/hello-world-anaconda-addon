@@ -1,0 +1,6 @@
+[D-BUS Service]
+# Start the org.fedoraproject.Anaconda.Addons.HelloWorld service.
+# Runs org_fedora_hello_world/service/__main__.py
+Name=org.fedoraproject.Anaconda.Addons.HelloWorld
+Exec=/usr/libexec/anaconda/start-module org_fedora_hello_world.service
+User=root
