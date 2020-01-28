@@ -36,13 +36,12 @@ class, so they are run at pre-defined times.
 Every kind of task has the run() method that performs the actual work.
 """
 
+import logging
 from os.path import normpath, join as joinpath
 
 from pyanaconda.modules.common.task import Task
 
 from org_fedora_hello_world.constants import HELLO_WORLD_FILE_PATH
-
-import logging
 
 log = logging.getLogger(__name__)
 

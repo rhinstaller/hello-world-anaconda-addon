@@ -15,6 +15,8 @@
 # License and may only be used or replicated with the express permission of
 # Red Hat, Inc.
 #
+import logging
+
 from pyanaconda.core.configuration.anaconda import conf
 from pyanaconda.core.dbus import DBus
 from pyanaconda.core.signal import Signal
@@ -26,8 +28,6 @@ from org_fedora_hello_world.service.hello_world_interface import HelloWorldInter
 from org_fedora_hello_world.service.installation import HelloWorldConfigurationTask, \
     HelloWorldInstallationTask
 from org_fedora_hello_world.service.kickstart import HelloWorldKickstartSpecification
-
-import logging
 
 log = logging.getLogger(__name__)
 

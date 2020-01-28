@@ -27,23 +27,21 @@
 
 """Module with the class for the Hello world TUI spoke."""
 
+import logging
 import re
-
-from pyanaconda.ui.tui.spokes import NormalTUISpoke
-from pyanaconda.ui.common import FirstbootSpokeMixIn
-
-# Simpleline's dialog configured for use in Anaconda
-from pyanaconda.ui.tui.tuiobject import Dialog, PasswordDialog
 
 from simpleline.render.screen import InputState
 from simpleline.render.containers import ListColumnContainer
 from simpleline.render.widgets import CheckboxWidget, EntryWidget
 
+from pyanaconda.ui.tui.spokes import NormalTUISpoke
+from pyanaconda.ui.common import FirstbootSpokeMixIn
+# Simpleline's dialog configured for use in Anaconda
+from pyanaconda.ui.tui.tuiobject import Dialog, PasswordDialog
+
 # the path to addons is in sys.path so we can import things from org_fedora_hello_world
 from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
 from org_fedora_hello_world.constants import HELLO_WORLD
-
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +66,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     :see: pyanaconda.ui.tui.TUISpoke
     :see: pyanaconda.ui.common.FirstbootSpokeMixIn
     :see: simpleline.render.widgets.Widget
-
     """
 
     ### class attributes defined by API ###
@@ -88,7 +85,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         :param payload: object storing packaging-related information
         :type payload: pyanaconda.packaging.Payload
         """
-
         NormalTUISpoke.__init__(self, data, storage, payload)
         self.title = N_("Hello World")
 
@@ -105,9 +101,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         a long time and thus could be called in a separated thread.
 
         :see: pyanaconda.ui.common.UIObject.initialize
-
         """
-
         NormalTUISpoke.initialize(self)
 
         self._reverse = self._hello_world_module.Reverse
@@ -124,9 +118,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         :param args: optional argument that may be used when the screen is
                      scheduled
         :type args: anything
-
         """
-
         # call parent method to setup basic container with screen title set
         super().refresh(args)
 
@@ -147,21 +139,17 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         """
         The apply method that is called when the spoke is left. It should
         update the contents of self.data with values set in the spoke.
-
         """
         self._hello_world_module.SetReverse(self._reverse)
         lines = self._entered_text.splitlines(True)
         self._hello_world_module.SetLines(lines)
-
 
     def execute(self):
         """
         The execute method that is called when the spoke is left. It is
         supposed to do all changes to the runtime environment according to
         the values set in the spoke.
-
         """
-
         # nothing to do here
         pass
 
@@ -173,9 +161,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         or uncompleted according to the returned value.
 
         :rtype: bool
-
         """
-
         return bool(self._hello_world_module.Lines)
 
     @property
@@ -187,9 +173,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         below the spoke's title.
 
         :rtype: str
-
         """
-
         lines = self._hello_world_module.Lines
         if not lines:
             return _("No text set")
@@ -211,14 +195,13 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
                  return InputState.PROCESSED or InputState.DISCARDED if the input was
                  processed successfully or not respectively
         :rtype: enum InputState
-
         """
         if self._container.process_user_input(key):
             return InputState.PROCESSED_AND_REDRAW
         else:
             return super().input(args=args, key=key)
 
-    def _change_reverse(self, data):
+    def _change_reverse(self, data):  # pylint: disable=unused-argument
         """Callback when user wants to switch checkbox.
 
         Flip state of the "reverse" parameter which is boolean.
@@ -229,13 +212,12 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         self._reverse = not self._reverse
         self._hello_world_module.SetReverse(self._reverse)
 
-    def _change_lines(self, data):
+    def _change_lines(self, data):   # pylint: disable=unused-argument
         """Callback when user wants to input new lines.
 
         :param data: can be passed when adding callback in container (not used here)
         :type data: anything
         """
-
         dialog = Dialog("Lines")
         self._entered_text = dialog.run()
         lines = self._entered_text.splitlines(True)
@@ -259,7 +241,6 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         :param payload: object storing packaging-related information
         :type payload: pyanaconda.packaging.Payload
         """
-
         NormalTUISpoke.__init__(self, data, storage, payload)
 
         self.title = N_("Hello World Edit")
@@ -280,9 +261,7 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         :param args: optional argument that may be used when the screen is
                      scheduled
         :type args: anything
-
         """
-
         super().refresh(args)
         self._container = ListColumnContainer(columns=1)
 
@@ -300,38 +279,35 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         if self._checked:
             self._container.add(EntryWidget(title="Conditional password input",
                                             value="Password set" if self._conditional_input
-                                                  else ""),
+                                            else ""),
                                 callback=self._get_conditional_input)
 
         self._window.add_separator()
 
-    def _checkbox_called(self, data):
+    def _checkbox_called(self, data):  # pylint: disable=unused-argument
         """Callback when user wants to switch checkbox.
 
         :param data: can be passed when adding callback in container (not used here)
         :type data: anything
         """
-
         self._checked = not self._checked
 
-    def _get_unconditional_input(self, data):
+    def _get_unconditional_input(self, data):  # pylint: disable=unused-argument
         """Callback when user wants to set unconditional input.
 
         :param data: can be passed when adding callback in container (not used here)
         :type data: anything
         """
-
         dialog = Dialog("Unconditional input", conditions=[self._check_user_input])
 
         self._unconditional_input = dialog.run()
 
-    def _get_conditional_input(self, data):
+    def _get_conditional_input(self, data):  # pylint: disable=unused-argument
         """Callback when user wants to set conditional input.
 
         :param data: can be passed when adding callback in container (not used here)
         :type data: anything
         """
-
         # password policy for setting root password
         password_policy = self.data.anaconda.pwpolicy.get_policy("root", fallback_to_default=True)
         dialog = PasswordDialog("Unconditional password input", policy=password_policy)
@@ -347,7 +323,6 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         :param report_func: function for reporting errors on user input
         :type report_func: func with one param
         """
-
         if re.match(r'^\w+$', user_input):
             return True
         else:
@@ -367,9 +342,7 @@ class HelloWorldEditSpoke(NormalTUISpoke):
                  return InputState.PROCESSED or InputState.DISCARDED if the input was
                  processed successfully or not respectively
         :rtype: enum InputState
-
         """
-
         if self._container.process_user_input(key):
             return InputState.PROCESSED_AND_REDRAW
         else:

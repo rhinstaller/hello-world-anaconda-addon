@@ -15,6 +15,8 @@
 # License and may only be used or replicated with the express permission of
 # Red Hat, Inc.
 #
+import logging
+
 from dasbus.server.interface import dbus_interface
 from dasbus.server.property import emits_properties_changed
 from dasbus.typing import *  # pylint: disable=wildcard-import,unused-wildcard-import
@@ -22,8 +24,6 @@ from dasbus.typing import *  # pylint: disable=wildcard-import,unused-wildcard-i
 from pyanaconda.modules.common.base import KickstartModuleInterface
 
 from org_fedora_hello_world.constants import HELLO_WORLD
-
-import logging
 
 log = logging.getLogger(__name__)
 

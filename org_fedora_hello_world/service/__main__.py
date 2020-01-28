@@ -23,6 +23,7 @@ data/*.service
 from pyanaconda.modules.common import init
 init()  # must be called before importing the service code
 
+# pylint:disable=wrong-import-position
 from org_fedora_hello_world.service.hello_world import HelloWorld
 service = HelloWorld()
 service.run()

@@ -18,12 +18,12 @@
 
 """This module defines the parts needed for handling Kickstart data in the service."""
 
+import logging
+
 from pykickstart.options import KSOptionParser
 
 from pyanaconda.core.kickstart import VERSION, KickstartSpecification
 from pyanaconda.core.kickstart.addon import AddonData
-
-import logging
 
 log = logging.getLogger(__name__)
 
@@ -76,7 +76,7 @@ class HelloWorldData(AddonData):
         self.seen = True
         self.reverse = ns.reverse
 
-    def handle_line(self, line, line_number=None):
+    def handle_line(self, line, line_number=None):  # pylint: disable=unused-argument
         """The handle_line method that is called with every line from this
         addon's %addon section of the kickstart file.
 
