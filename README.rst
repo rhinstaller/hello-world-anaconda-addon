@@ -79,8 +79,12 @@ if you change the name.
 Makefile
 --------
 
-The ``Makefile`` provided with this addon is very basic. It copies files to their respective paths,
-and then creates an updates image that contains these files.
+The ``Makefile`` provided with this addon is very basic. It provides two targets:
+
+1. The ``_default`` target copies files to their respective paths, and then creates an updates
+   image that contains these files.
+2. The ``check`` target runs ``pylint`` on the code. Configuration is provided in the file
+   ``.pylintrc`` in the repository root.
 
 The paths for the various types of files encoded in the ``Makefile`` are required by Anaconda.
 If you put your own files anywhere else, the addon will not work.

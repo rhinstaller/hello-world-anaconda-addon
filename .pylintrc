@@ -1,0 +1,34 @@
+[MESSAGES CONTROL]
+
+disable=raw-checker-failed,
+        locally-disabled,
+        suppressed-message,
+        useless-suppression,
+        no-absolute-import,
+        unnecessary-pass,
+        invalid-name,
+        no-else-return,
+        missing-docstring,
+        no-self-use,
+        too-few-public-methods,
+        duplicate-code,
+        too-many-ancestors
+
+
+[FORMAT]
+
+max-line-length=99
+
+
+[BASIC]
+
+# ignore very short property getters and setters
+docstring-min-length=1
+
+
+[CLASSES]
+
+defining-attr-methods=__init__,
+                      __new__,
+                      setUp,
+                      initialize

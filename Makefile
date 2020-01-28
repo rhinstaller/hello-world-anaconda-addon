@@ -6,7 +6,11 @@ ADDONDIR := $(BASEDIR)/addons/
 SERVICESDIR := $(BASEDIR)/dbus/services/
 CONFDIR := $(BASEDIR)/dbus/confs/
 
+PYTHON?=python3
+
+
 _default:
+	@echo "*** Building updates image ***"
 	@echo -n "Working..."
 	@mkdir -p $(ADDONDIR)
 	@cp -par org_fedora_hello_world $(ADDONDIR)
@@ -19,3 +23,11 @@ _default:
 	@echo " done."
 	@echo "Put hello_world_addon_updates.img up where you can use it via"
 	@echo "  inst.updates=<path>/hello_world_addon_updates.img"
+
+
+.PHONY: check
+check:
+	@echo "*** Running pylint ***"
+	$(PYTHON) -m pylint org_fedora_hello_world/
+# Using git clone of Anaconda will give you import errors. In such case, run the check this way:
+# PYTHONPATH=/my/anaconda/git/clone make check
