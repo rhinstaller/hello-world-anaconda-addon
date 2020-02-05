@@ -20,11 +20,17 @@
 
 """Module with the HelloWorldSpoke class."""
 
-# the path to addons is in sys.path so we can import things from org_fedora_hello_world
-from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
+import logging
+
 from pyanaconda.ui.gui import GUIObject
 from pyanaconda.ui.gui.spokes import NormalSpoke
 from pyanaconda.ui.common import FirstbootSpokeMixIn
+
+# the path to addons is in sys.path so we can import things from org_fedora_hello_world
+from org_fedora_hello_world.categories.hello_world import HelloWorldCategory
+from org_fedora_hello_world.constants import HELLO_WORLD
+
+log = logging.getLogger(__name__)
 
 # export only the spoke, no helper functions, classes or constants
 __all__ = ["HelloWorldSpoke"]
@@ -51,9 +57,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     :see: pyanaconda.ui.gui.GUIObject
     :see: pyanaconda.ui.common.FirstbootSpokeMixIn
     :see: pyanaconda.ui.gui.spokes.NormalSpoke
-
     """
-
     ### class attributes defined by API ###
 
     # list all top-level objects from the .glade file that should be exposed
@@ -74,7 +78,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     icon = "face-cool-symbolic"
 
     # title of the spoke (will be displayed on the hub)
-    title = N_("_HELLO WORLD")
+    title = N_("_Hello World")
 
     ### methods defined by API ###
     def __init__(self, data, storage, payload):
@@ -89,8 +93,9 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         :param payload: object storing packaging-related information
         :type payload: pyanaconda.packaging.Payload
         """
-
         NormalSpoke.__init__(self, data, storage, payload)
+
+        self._hello_world_module = HELLO_WORLD.get_proxy()
 
     def initialize(self):
         """
@@ -99,11 +104,10 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         a long time and thus could be called in a separated thread.
 
         :see: pyanaconda.ui.common.UIObject.initialize
-
         """
-
         NormalSpoke.initialize(self)
-        self._entry = self.builder.get_object("textEntry")
+        self._entry = self.builder.get_object("textLines")
+        self._reverse = self.builder.get_object("reverseCheckButton")
 
     def refresh(self):
         """
@@ -112,28 +116,32 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         self.data.
 
         :see: pyanaconda.ui.common.UIObject.refresh
-
         """
-
-        self._entry.set_text(self.data.addons.org_fedora_hello_world.text)
+        lines = self._hello_world_module.Lines
+        self._entry.get_buffer().set_text("".join(lines))
+        reverse = self._hello_world_module.Reverse
+        self._reverse.set_active(reverse)
 
     def apply(self):
         """
         The apply method that is called when the spoke is left. It should
-        update the contents of self.data with values set in the GUI elements.
-
+        update the D-Bus service with values set in the GUI elements.
         """
+        buf = self._entry.get_buffer()
+        text = buf.get_text(buf.get_start_iter(),
+                            buf.get_end_iter(),
+                            True)
+        lines = text.splitlines(True)
+        self._hello_world_module.SetLines(lines)
 
-        self.data.addons.org_fedora_hello_world.text = self._entry.get_text()
+        self._hello_world_module.SetReverse(self._reverse.get_active())
 
     def execute(self):
         """
-        The excecute method that is called when the spoke is left. It is
+        The execute method that is called when the spoke is left. It is
         supposed to do all changes to the runtime environment according to
         the values set in the GUI elements.
-
         """
-
         # nothing to do here
         pass
 
@@ -144,9 +152,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         or not. The spoke is made (in)sensitive based on the returned value.
 
         :rtype: bool
-
         """
-
         # this spoke is always ready
         return True
 
@@ -158,10 +164,8 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         or uncompleted acording to the returned value.
 
         :rtype: bool
-
         """
-
-        return bool(self.data.addons.org_fedora_hello_world.text)
+        return bool(self._hello_world_module.Lines)
 
     @property
     def mandatory(self):
@@ -170,9 +174,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         completed to continue in the installation process.
 
         :rtype: bool
-
         """
-
         # this is an optional spoke that is not mandatory to be completed
         return False
 
@@ -185,27 +187,22 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         below the spoke's title.
 
         :rtype: str
-
         """
-
-        text = self.data.addons.org_fedora_hello_world.text
-
-        # If --reverse was specified in the kickstart, reverse the text
-        if self.data.addons.org_fedora_hello_world.reverse:
-            text = text[::-1]
-
-        if text:
-            return _("Text set: %s") % text
+        lines = self._hello_world_module.Lines
+        if not lines:
+            return _("No text added")
+        elif self._hello_world_module.Reverse:
+            return _("Text set with {} lines to reverse").format(len(lines))
         else:
-            return _("Text not set")
+            return _("Text set with {} lines").format(len(lines))
 
     ### handlers ###
-    def on_entry_icon_clicked(self, entry, *args):
+    def on_entry_icon_clicked(self, entry, *args):  # pylint: disable=unused-argument
         """Handler for the textEntry's "icon-release" signal."""
 
         entry.set_text("")
 
-    def on_main_button_clicked(self, *args):
+    def on_main_button_clicked(self, *args):  # pylint: disable=unused-argument
         """Handler for the mainButton's "clicked" signal."""
 
         # every GUIObject gets ksdata in __init__
@@ -222,9 +219,7 @@ class HelloWorldDialog(GUIObject):
 
     :see: pyanaconda.ui.common.UIObject
     :see: pyanaconda.ui.gui.GUIObject
-
     """
-
     builderObjects = ["sampleDialog"]
     mainWidgetName = "sampleDialog"
     uiFile = "hello_world.glade"
@@ -241,9 +236,7 @@ class HelloWorldDialog(GUIObject):
 
         :returns: respond id
         :rtype: int
-
         """
-
         ret = self.window.run()
         self.window.destroy()
 
