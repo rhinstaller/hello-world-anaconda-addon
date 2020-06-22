@@ -33,7 +33,6 @@ class HelloWorldData(AddonData):
 
     def __init__(self):
         super().__init__()
-        self.seen = False
         self.lines = []
         self.reverse = False
 
@@ -73,7 +72,6 @@ class HelloWorldData(AddonData):
         ns = op.parse_args(args=args, lineno=line_number)
 
         # Store the result of the parsing.
-        self.seen = True
         self.reverse = ns.reverse
 
     def handle_line(self, line, line_number=None):  # pylint: disable=unused-argument
@@ -102,9 +100,6 @@ class HelloWorldData(AddonData):
         """What should end up in the resulting kickstart file, i.e. the %addon
         section containing string representation of the stored data.
         """
-        if not self.seen:
-            return ""
-
         section = "\n%addon org_fedora_hello_world"
 
         if self.reverse:
