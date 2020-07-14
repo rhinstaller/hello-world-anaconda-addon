@@ -40,8 +40,6 @@ class HelloWorld(KickstartService):
 
     def __init__(self):
         super().__init__()
-
-        self._seen = False
         self._reverse = False
         self._lines = []
 
@@ -62,14 +60,12 @@ class HelloWorld(KickstartService):
     def process_kickstart(self, data):
         """Process the kickstart data."""
         log.debug("Processing kickstart data...")
-        self._seen = data.addons.org_fedora_hello_world.seen
         self._reverse = data.addons.org_fedora_hello_world.reverse
         self._lines = data.addons.org_fedora_hello_world.lines
 
     def setup_kickstart(self, data):
         """Set the given kickstart data."""
         log.debug("Generating kickstart data...")
-        data.addons.org_fedora_hello_world.seen = self._seen
         data.addons.org_fedora_hello_world.reverse = self._reverse
         data.addons.org_fedora_hello_world.lines = self._lines
 
