@@ -23,7 +23,7 @@ from pyanaconda.ui.categories import SpokeCategory
 
 __all__ = ["HelloWorldCategory"]
 
-N_ = lambda x: x
+_ = lambda x: x
 
 
 class HelloWorldCategory(SpokeCategory):
@@ -34,4 +34,6 @@ class HelloWorldCategory(SpokeCategory):
     Spokes reference a class of the category they should be included in.
     """
 
-    title = N_("HELLO WORLD")
+    @staticmethod
+    def get_title():
+        return _("HELLO WORLD")
