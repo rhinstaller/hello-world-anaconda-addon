@@ -34,6 +34,7 @@ from simpleline.render.screen import InputState
 from simpleline.render.containers import ListColumnContainer
 from simpleline.render.widgets import CheckboxWidget, EntryWidget
 
+from pyanaconda.core.constants import PASSWORD_POLICY_ROOT
 from pyanaconda.ui.tui.spokes import NormalTUISpoke
 from pyanaconda.ui.common import FirstbootSpokeMixIn
 # Simpleline's dialog configured for use in Anaconda
@@ -308,9 +309,7 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         :param data: can be passed when adding callback in container (not used here)
         :type data: anything
         """
-        # password policy for setting root password
-        password_policy = self.data.anaconda.pwpolicy.get_policy("root", fallback_to_default=True)
-        dialog = PasswordDialog("Unconditional password input", policy=password_policy)
+        dialog = PasswordDialog("Unconditional password input", policy_name=PASSWORD_POLICY_ROOT)
 
         self._conditional_input = dialog.run()
 
