@@ -5,11 +5,12 @@ BASEDIR := $(TMPDIR)/usr/share/anaconda/
 ADDONDIR := $(BASEDIR)/addons/
 SERVICESDIR := $(BASEDIR)/dbus/services/
 CONFDIR := $(BASEDIR)/dbus/confs/
+CONTAINER_NAME = hello-world-anaconda-addon-ci
 
-PYTHON?=python3
+_default: updates
 
-
-_default:
+.PHONY: updates
+updates:
 	@echo "*** Building updates image ***"
 	@echo -n "Working..."
 	@mkdir -p $(ADDONDIR)
@@ -24,10 +25,16 @@ _default:
 	@echo "Put hello_world_addon_updates.img up where you can use it via"
 	@echo "  inst.updates=<path>/hello_world_addon_updates.img"
 
+.PHONY: container-test
+container-test:
+	podman build --tag $(CONTAINER_NAME) --file ./Dockerfile
+	podman run --volume .:/hello-world-anaconda-addon:Z $(CONTAINER_NAME) make test
+
+.PHONY: test
+test: check
 
 .PHONY: check
 check:
-	@echo "*** Running pylint ***"
-	$(PYTHON) -m pylint org_fedora_hello_world/
-# Using git clone of Anaconda will give you import errors. In such case, run the check this way:
-# PYTHONPATH=/my/anaconda/git/clone make check
+	@echo "*** Running pylint checks ***"
+	pylint org_fedora_hello_world/
+	@echo "[ OK ]"
