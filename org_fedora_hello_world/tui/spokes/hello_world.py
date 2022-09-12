@@ -30,6 +30,7 @@
 import logging
 import re
 
+from simpleline.render.prompt import Prompt
 from simpleline.render.screen import InputState
 from simpleline.render.containers import ListColumnContainer
 from simpleline.render.widgets import CheckboxWidget, EntryWidget
@@ -74,26 +75,18 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
     # category this spoke belongs to
     category = HelloWorldCategory
 
-    def __init__(self, data, storage, payload):
+    def __init__(self, *args, **kwargs):
         """
+        Create the representation of the spoke.
+
         :see: simpleline.render.screen.UIScreen
-        :param data: data object passed to every spoke to load/store data
-                     from/to it
-        :type data: pykickstart.base.BaseHandler
-        :param storage: object storing storage-related information
-                        (disks, partitioning, bootloader, etc.)
-        :type storage: blivet.Blivet
-        :param payload: object storing packaging-related information
-        :type payload: pyanaconda.packaging.Payload
         """
-        NormalTUISpoke.__init__(self, data, storage, payload)
+        super().__init__(*args, **kwargs)
         self.title = N_("Hello World")
-
-        self._container = None
         self._hello_world_module = HELLO_WORLD.get_proxy()
-
+        self._container = None
         self._reverse = False
-        self._entered_text = ""
+        self._lines = ""
 
     def initialize(self):
         """
@@ -103,16 +96,26 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
 
         :see: pyanaconda.ui.common.UIObject.initialize
         """
-        NormalTUISpoke.initialize(self)
+        super().initialize()
+
+    def setup(self, args=None):
+        """
+        The setup method that is called right before the spoke is entered.
+        It should update its state according to the contents of DBus modules.
+
+        :see: simpleline.render.screen.UIScreen.setup
+        """
+        super().setup(args)
 
         self._reverse = self._hello_world_module.Reverse
-        self._entered_text = "".join(self._hello_world_module.Lines)
+        self._lines = self._hello_world_module.Lines
+
+        return True
 
     def refresh(self, args=None):
         """
         The refresh method that is called every time the spoke is displayed.
-        It should update the UI elements according to the contents of
-        self.data.
+        It should generate the UI elements according to its state.
 
         :see: pyanaconda.ui.common.UIObject.refresh
         :see: simpleline.render.screen.UIScreen.refresh
@@ -123,33 +126,40 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         # call parent method to setup basic container with screen title set
         super().refresh(args)
 
-        self._reverse = self._hello_world_module.Reverse
-        self._entered_text = "".join(self._hello_world_module.Lines)
+        self._container = ListColumnContainer(
+            columns=1
+        )
+        self._container.add(
+            CheckboxWidget(
+                title="Reverse",
+                completed=self._reverse
+            ),
+            callback=self._change_reverse
+        )
+        self._container.add(
+            EntryWidget(
+                title="Hello world text",
+                value="".join(self._lines)
+            ),
+            callback=self._change_lines
+        )
 
-        self._container = ListColumnContainer(columns=1)
-        self.window.add(self._container)
-
-        self._container.add(CheckboxWidget(title="Reverse", completed=self._reverse),
-                            callback=self._change_reverse)
-        self._container.add(EntryWidget(title="Hello world text", value=self._entered_text),
-                            callback=self._change_lines)
-
-        self._window.add_separator()
+        self.window.add_with_separator(self._container)
 
     def apply(self):
         """
-        The apply method that is called when the spoke is left. It should
-        update the contents of self.data with values set in the spoke.
+        The apply method is not called automatically for TUI. It should be called
+        in input() if required. It should update the contents of internal data
+        structures with values set in the spoke.
         """
         self._hello_world_module.SetReverse(self._reverse)
-        lines = self._entered_text.splitlines(True)
-        self._hello_world_module.SetLines(lines)
+        self._hello_world_module.SetLines(self._lines)
 
     def execute(self):
         """
-        The execute method that is called when the spoke is left. It is
-        supposed to do all changes to the runtime environment according to
-        the values set in the spoke.
+        The execute method is not called automatically for TUI. It should be called
+        in input() if required. It is supposed to do all changes to the runtime
+        environment according to the values set in the spoke.
         """
         # nothing to do here
         pass
@@ -176,9 +186,13 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         :rtype: str
         """
         lines = self._hello_world_module.Lines
+
         if not lines:
             return _("No text set")
-        elif self._hello_world_module.Reverse:
+
+        reverse = self._hello_world_module.Reverse
+
+        if reverse:
             return _("Text set with {} lines to reverse").format(len(lines))
         else:
             return _("Text set with {} lines").format(len(lines))
@@ -199,8 +213,13 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         """
         if self._container.process_user_input(key):
             return InputState.PROCESSED_AND_REDRAW
-        else:
-            return super().input(args=args, key=key)
+
+        if key.lower() == Prompt.CONTINUE:
+            self.apply()
+            self.execute()
+            return InputState.PROCESSED_AND_CLOSE
+
+        return super().input(args, key)
 
     def _change_reverse(self, data):  # pylint: disable=unused-argument
         """Callback when user wants to switch checkbox.
@@ -211,7 +230,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         :type data: anything
         """
         self._reverse = not self._reverse
-        self._hello_world_module.SetReverse(self._reverse)
 
     def _change_lines(self, data):   # pylint: disable=unused-argument
         """Callback when user wants to input new lines.
@@ -220,9 +238,8 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalTUISpoke):
         :type data: anything
         """
         dialog = Dialog("Lines")
-        self._entered_text = dialog.run()
-        lines = self._entered_text.splitlines(True)
-        self._hello_world_module.SetLines(lines)
+        result = dialog.run()
+        self._lines = result.splitlines(True)
 
 
 class HelloWorldEditSpoke(NormalTUISpoke):
@@ -230,22 +247,14 @@ class HelloWorldEditSpoke(NormalTUISpoke):
 
     category = HelloWorldCategory
 
-    def __init__(self, data, storage, payload):
+    def __init__(self, *args, **kwargs):
         """
         :see: simpleline.render.screen.UIScreen
-        :param data: data object passed to every spoke to load/store data
-                     from/to it
-        :type data: pykickstart.base.BaseHandler
-        :param storage: object storing storage-related information
-                        (disks, partitioning, bootloader, etc.)
-        :type storage: blivet.Blivet
-        :param payload: object storing packaging-related information
-        :type payload: pyanaconda.packaging.Payload
         """
-        NormalTUISpoke.__init__(self, data, storage, payload)
-
+        super().__init__(*args, **kwargs)
         self.title = N_("Hello World Edit")
         self._container = None
+
         # values for user to set
         self._checked = False
         self._unconditional_input = ""
@@ -266,24 +275,31 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         super().refresh(args)
         self._container = ListColumnContainer(columns=1)
 
-        # add ListColumnContainer to window (main window container)
-        # this will automatically add numbering and will call callbacks when required
-        self.window.add(self._container)
-
-        self._container.add(CheckboxWidget(title="Simple checkbox", completed=self._checked),
-                            callback=self._checkbox_called)
-        self._container.add(EntryWidget(title="Unconditional text input",
-                                        value=self._unconditional_input),
-                            callback=self._get_unconditional_input)
+        self._container.add(
+            CheckboxWidget(
+                title="Simple checkbox",
+                completed=self._checked
+            ),
+            callback=self._checkbox_called
+        )
+        self._container.add(
+            EntryWidget(
+                title="Unconditional text input",
+                value=self._unconditional_input),
+            callback=self._get_unconditional_input
+        )
 
         # show conditional input only if the checkbox is checked
         if self._checked:
-            self._container.add(EntryWidget(title="Conditional password input",
-                                            value="Password set" if self._conditional_input
-                                            else ""),
-                                callback=self._get_conditional_input)
+            self._container.add(
+                EntryWidget(
+                    title="Conditional password input",
+                    value="Password set" if self._conditional_input else ""
+                ),
+                callback=self._get_conditional_input
+            )
 
-        self._window.add_separator()
+        self.window.add_with_separator(self._container)
 
     def _checkbox_called(self, data):  # pylint: disable=unused-argument
         """Callback when user wants to switch checkbox.
@@ -299,8 +315,10 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         :param data: can be passed when adding callback in container (not used here)
         :type data: anything
         """
-        dialog = Dialog("Unconditional input", conditions=[self._check_user_input])
-
+        dialog = Dialog(
+            "Unconditional input",
+            conditions=[self._check_user_input]
+        )
         self._unconditional_input = dialog.run()
 
     def _get_conditional_input(self, data):  # pylint: disable=unused-argument
@@ -309,8 +327,10 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         :param data: can be passed when adding callback in container (not used here)
         :type data: anything
         """
-        dialog = PasswordDialog("Unconditional password input", policy_name=PASSWORD_POLICY_ROOT)
-
+        dialog = PasswordDialog(
+            "Unconditional password input",
+            policy_name=PASSWORD_POLICY_ROOT
+        )
         self._conditional_input = dialog.run()
 
     def _check_user_input(self, user_input, report_func):
@@ -345,7 +365,7 @@ class HelloWorldEditSpoke(NormalTUISpoke):
         if self._container.process_user_input(key):
             return InputState.PROCESSED_AND_REDRAW
         else:
-            return super().input(args=args, key=key)
+            return super().input(args, key)
 
     @property
     def completed(self):
@@ -354,10 +374,8 @@ class HelloWorldEditSpoke(NormalTUISpoke):
 
     @property
     def status(self):
-        return "Hidden input %s" % ("entered" if self._conditional_input
-                                    else "not entered")
+        return "Hidden input %s" % ("entered" if self._conditional_input else "not entered")
 
     def apply(self):
-
         # nothing to do here
         pass

@@ -118,8 +118,7 @@ class HelloWorldData(AddonData):
 
 
 class HelloWorldKickstartSpecification(KickstartSpecification):
-
-    version = VERSION
+    """Kickstart specification of the Hello World add-on."""
 
     addons = {
         "org_fedora_hello_world": HelloWorldData
