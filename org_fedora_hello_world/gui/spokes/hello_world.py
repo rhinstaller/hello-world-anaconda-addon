@@ -51,7 +51,6 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     the FirstbootSpokeMixIn, it will also appear in the Initial Setup (successor
     of the Firstboot tool).
 
-
     :see: pyanaconda.ui.common.UIObject
     :see: pyanaconda.ui.common.Spoke
     :see: pyanaconda.ui.gui.GUIObject
@@ -81,21 +80,16 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     title = N_("_Hello World")
 
     ### methods defined by API ###
-    def __init__(self, data, storage, payload):
+    def __init__(self, *args, **kwargs):
         """
-        :see: pyanaconda.ui.common.Spoke.__init__
-        :param data: data object passed to every spoke to load/store data
-                     from/to it
-        :type data: pykickstart.base.BaseHandler
-        :param storage: object storing storage-related information
-                        (disks, partitioning, bootloader, etc.)
-        :type storage: blivet.Blivet
-        :param payload: object storing packaging-related information
-        :type payload: pyanaconda.packaging.Payload
-        """
-        NormalSpoke.__init__(self, data, storage, payload)
+        Create the representation of the spoke.
 
+        :see: pyanaconda.ui.common.Spoke.__init__
+        """
+        super().__init__(*args, **kwargs)
         self._hello_world_module = HELLO_WORLD.get_proxy()
+        self._entry = None
+        self._reverse = None
 
     def initialize(self):
         """
@@ -105,7 +99,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
 
         :see: pyanaconda.ui.common.UIObject.initialize
         """
-        NormalSpoke.initialize(self)
+        super().initialize()
         self._entry = self.builder.get_object("textLines")
         self._reverse = self.builder.get_object("reverseCheckButton")
 
@@ -119,6 +113,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         """
         lines = self._hello_world_module.Lines
         self._entry.get_buffer().set_text("".join(lines))
+
         reverse = self._hello_world_module.Reverse
         self._reverse.set_active(reverse)
 
@@ -128,13 +123,16 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         update the D-Bus service with values set in the GUI elements.
         """
         buf = self._entry.get_buffer()
-        text = buf.get_text(buf.get_start_iter(),
-                            buf.get_end_iter(),
-                            True)
+        text = buf.get_text(
+            buf.get_start_iter(),
+            buf.get_end_iter(),
+            True
+        )
         lines = text.splitlines(True)
         self._hello_world_module.SetLines(lines)
 
-        self._hello_world_module.SetReverse(self._reverse.get_active())
+        reverse = self._reverse.get_active()
+        self._hello_world_module.SetReverse(reverse)
 
     def execute(self):
         """
@@ -189,6 +187,7 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
         :rtype: str
         """
         lines = self._hello_world_module.Lines
+
         if not lines:
             return _("No text added")
         elif self._hello_world_module.Reverse:
@@ -199,12 +198,10 @@ class HelloWorldSpoke(FirstbootSpokeMixIn, NormalSpoke):
     ### handlers ###
     def on_entry_icon_clicked(self, entry, *args):  # pylint: disable=unused-argument
         """Handler for the textEntry's "icon-release" signal."""
-
         entry.set_text("")
 
     def on_main_button_clicked(self, *args):  # pylint: disable=unused-argument
         """Handler for the mainButton's "clicked" signal."""
-
         # every GUIObject gets ksdata in __init__
         dialog = HelloWorldDialog(self.data)
 
@@ -224,12 +221,6 @@ class HelloWorldDialog(GUIObject):
     mainWidgetName = "sampleDialog"
     uiFile = "hello_world.glade"
 
-    def __init__(self, *args):
-        GUIObject.__init__(self, *args)
-
-    def initialize(self):
-        GUIObject.initialize(self)
-
     def run(self):
         """
         Run dialog and destroy its window.
@@ -239,5 +230,4 @@ class HelloWorldDialog(GUIObject):
         """
         ret = self.window.run()
         self.window.destroy()
-
         return ret
